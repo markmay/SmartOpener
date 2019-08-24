@@ -1,0 +1,19 @@
+<settings>
+	<setting propertyKey="@Properties.myQUserName"
+		title="@Strings.myQUserNameTitle">
+		<settingConfig type="alphaNumeric" />
+	</setting>
+	<setting propertyKey="@Properties.myQPassword"
+		title="@Strings.myQPasswordTitle">
+		<settingConfig type="password" />
+	</setting>
+	<setting propertyKey="@Properties.myQBrand"
+		title="@Strings.myQBrandTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Chamberlain</listEntry>
+			<listEntry value="1">@Strings.Craftsman</listEntry>
+			<listEntry value="2">@Strings.Liftmaster</listEntry>
+			<listEntry value="3">@Strings.Merlin</listEntry>
+		</settingConfig>
+	</setting>
+</settings>

@@ -1,0 +1,10 @@
+<strings>
+	<string id="AppName">Smart Opener</string>
+	<string id="myQUserNameTitle">MyQ UserName</string>
+	<string id="myQPasswordTitle">MyQ Password</string>
+	<string id="myQBrandTitle">MyQ Brand</string>
+	<string id="Chamberlain">Chamberlain</string>
+	<string id="Craftsman">Craftsman</string>
+	<string id="Liftmaster">Liftmaster</string>
+	<string id="Merlin">Merlin</string>
+</strings>

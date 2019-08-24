@@ -1,0 +1,6 @@
+<properties>
+	<property id="appVersion" type="string">1.0.0</property>
+	<property id="myQUserName" type="string"></property>
+	<property id="myQPassword" type="string"></property>
+	<property id="myQBrand" type="number">0</property>
+</properties>

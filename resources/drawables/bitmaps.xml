@@ -1,0 +1,7 @@
+<drawables>
+	<bitmap id="LauncherIcon" filename="launcher_icon.png" />
+	<bitmap id="openIcon" filename="open.png" />
+	<bitmap id="closedIcon" filename="closed.png" />
+	<bitmap id="openingIcon" filename="opening.png" />
+	<bitmap id="closingIcon" filename="closing.png" />
+</drawables>
