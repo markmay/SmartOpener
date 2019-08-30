@@ -2,21 +2,23 @@ using Toybox.Communications;
 using Toybox.Application.Storage;
 
 class SmartOpenerController {
-	hidden var view;
-	hidden var communicators;
+	hidden var viewWeak;
+	hidden var communicatorsWeak;
 	hidden var devices;
 	hidden var currentDevice;
 	
 	function initialize() { }
 	
 	function dirtyInitialize(view, communicators) {
-		self.view = view;
-		self.communicators = communicators;
+		self.viewWeak = view.weak();
+		self.communicatorsWeak = communicators.weak();
 		loadDevices();
 	}	
 	
 	function loadDevices() {
+		var view = viewWeak.get();
 		if (isConnectionAvailable()) {
+			var communicators = communicatorsWeak.get();
 			view.setConnectionStatus(true);
 			devices = getStoredDevices();
 			currentDevice = null;
@@ -67,6 +69,7 @@ class SmartOpenerController {
 	}
 	
 	function devicesLoaded(loadedDevices) {
+		var view = viewWeak.get();
 		var keys = loadedDevices.keys();
 		var size = keys.size();
 		for (var i = 0; i < size; i++) {
@@ -82,6 +85,7 @@ class SmartOpenerController {
 	}
 	
 	function displayDeviceStates() {
+		var view = viewWeak.get();
 		var keys = devices.keys();
 		var deviceDetails = "";
 		for (var i = 0; i < keys.size(); i++) {
@@ -97,6 +101,7 @@ class SmartOpenerController {
 			var device = devices[devices.keys()[0]];
 			changeDeviceState(device);
 		} else {
+			var view = viewWeak.get();
 			view.showMenu();
 		}
 	}
@@ -121,7 +126,8 @@ class SmartOpenerController {
 	function changeDeviceState(device) {
 	//	System.println("device:" + device);
 	//	System.println("deviceType: " + device[:type]);
-		var communicator = communicators[device[:type]];
+		var communicator = communicatorsWeak.get()[device[:type]];
+		var view = viewWeak.get();
 		System.println(communicator);
 		if (communicator.changeDeviceState(device)) {
 			System.println("request submitted");
@@ -132,10 +138,12 @@ class SmartOpenerController {
 	}
 	
 	function error(message) {
+		var view = viewWeak.get();
 		view.notify(message);
 	}
 	
 	function deviceStateChange() {
+		var view = viewWeak.get();
 		view.notify("Device state changed");
 		view.update();
 	}

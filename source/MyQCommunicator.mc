@@ -1,4 +1,6 @@
 using Toybox.Communications;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 class MyQCommunicator {
 	//hidden var notify;
@@ -145,11 +147,18 @@ class MyQCommunicator {
 					var deviceId = device["serial_number"];
 					var status = device["state"]["door_state"];
 					var desc = device["name"];
+					var lastUpdate = getDateDifference(device["state"]["last_update"]);
 					if (validDevices[deviceId] != null) {
 						validDevices[deviceId][:state] = status;
 						validDevices[deviceId][:name] = desc;
 					} else {
-						validDevices[deviceId] = { :type => :myQ,  :name => desc, :id => deviceId, :state => status };
+						validDevices[deviceId] = { 
+							:type => :myQ,  
+							:name => desc, 
+							:id => deviceId, 
+							:state => status,
+							:lastUpdate => lastUpdate
+						};
 					}
 				} 
 			}
@@ -158,6 +167,36 @@ class MyQCommunicator {
 		System.println("devices: ");		
 		controller.devicesLoaded(validDevices);
 		System.println(validDevices);
+	}
+	
+	function getDateDifference(formatDate) {
+		System.println("formatDate:" + formatDate);
+		var moment = convertToMoment(formatDate);
+		var now = Time.now();
+		var diff = now.subtract(moment);
+		System.println("diff: " + diff);
+		return diff;
+	}
+	
+	function convertToMoment(formatDate) {
+		//2019-08-28T01:55:20.8072708Z"
+		System.println("year:" + formatDate.substring(0, 4).toNumber());
+		System.println("month:" + formatDate.substring(5, 7).toNumber());
+		System.println("day:" + formatDate.substring(8, 10).toNumber());
+		System.println("hour:" + formatDate.substring(11, 13).toNumber());
+		System.println("minute::" + formatDate.substring(14, 16).toNumber());
+		System.println("second:" + formatDate.substring(17, 19).toNumber());
+		
+		var options = {
+			:year => formatDate.substring(0, 4).toNumber(),
+			:month => formatDate.substring(5, 7).toNumber(),
+			:day => formatDate.substring(8, 10).toNumber(),
+			:hour => formatDate.substring(11, 13).toNumber(),
+			:minute => formatDate.substring(14, 16).toNumber(),
+			:second => formatDate.substring(17, 19).toNumber(),
+		};
+		System.println("options:" + options);
+		return Gregorian.moment(options);
 	}
 	
 	function validDevice(device) {
@@ -225,10 +264,11 @@ class MyQCommunicator {
     			return true;
     			break;
     		case 203:
+    		case 401:
     			invalidCredentials(data);
     			break;
     		default:
-    			failedLogin(data);
+    			failedLogin(responseCode, data);
     			break;
     			
     	}
@@ -241,11 +281,12 @@ class MyQCommunicator {
     }
     
     hidden function invalidCredentials(data) {
-    	System.println("invalid credentials");
+    	System.println("Invalid login");
+    	controller.error("Invalid User /\nPassword /\nBrand /\nCombination");
     }
     
-    hidden function failedLogin(data) {
-    	controller.error("login failed");
-    	System.println("failed to login: " +data);
+    hidden function failedLogin(response, data) {
+       	System.println("failed to login[" + response + "]: " + data);
+    	controller.error("login failed\n" + response);
     }
  }
