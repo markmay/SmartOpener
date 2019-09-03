@@ -38,11 +38,15 @@ if (augustUser != null && augustPassword != null) {
 			communicators[:august] = new AugustCommunicator(controller, "", "", "");
 		/*}
 		*/
-		if (myqUser != null && myqPassword != null) {
+		if (myqUser != null 
+				&& myqPassword != null 
+				&& !myqUser.equals("") 
+				&& !myqPassword.equals("")) {
+			
 			var myQ = new MyQCommunicator(controller, myqUser, myqPassword, myqBrand);
 			communicators[:myQ] = myQ;
 		}
 		
-		return communicators;		
+		return communicators;
     }
 }

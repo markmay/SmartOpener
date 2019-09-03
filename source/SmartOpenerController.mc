@@ -3,22 +3,21 @@ using Toybox.Application.Storage;
 
 class SmartOpenerController {
 	hidden var viewWeak;
-	hidden var communicatorsWeak;
+	hidden var communicators;
 	hidden var devices;
 	hidden var currentDevice;
 	
 	function initialize() { }
 	
-	function dirtyInitialize(view, communicators) {
+	function dirtyInitialize(view, pCommunicators) {
 		self.viewWeak = view.weak();
-		self.communicatorsWeak = communicators.weak();
+		self.communicators = pCommunicators;
 		loadDevices();
 	}	
 	
 	function loadDevices() {
 		var view = viewWeak.get();
 		if (isConnectionAvailable()) {
-			var communicators = communicatorsWeak.get();
 			view.setConnectionStatus(true);
 			devices = getStoredDevices();
 			currentDevice = null;
@@ -26,7 +25,7 @@ class SmartOpenerController {
 			var keys = communicators.keys();
 			var size = keys.size();
 			if (size == 0) { 
-				view.notify("No connections setup"); 
+				view.notify("No User /\nPassword\nsetup"); 
 			}
 			for (var i = 0; i < size; i++) {
 				var key = keys[i];
@@ -124,9 +123,7 @@ class SmartOpenerController {
 	}
 	
 	function changeDeviceState(device) {
-	//	System.println("device:" + device);
-	//	System.println("deviceType: " + device[:type]);
-		var communicator = communicatorsWeak.get()[device[:type]];
+		var communicator = communicators[device[:type]];
 		var view = viewWeak.get();
 		System.println(communicator);
 		if (communicator.changeDeviceState(device)) {
